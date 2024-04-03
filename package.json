@@ -1,0 +1,12 @@
+{
+  "name": "desafio_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch desafio_2/desafio_2.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
