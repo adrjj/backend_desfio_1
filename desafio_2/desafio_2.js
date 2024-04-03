@@ -2,10 +2,10 @@
 
 const fs = require('fs').promises;
 
-class productManager { 
-    constructor() {   
+class productManager {
+    constructor() {
         this.path = "productos.json"
-        this.products = [] 
+        this.products = []
     }
     async addProduct(title, description, price, thumbnail, code, stock) {
         const newProduct = {
@@ -60,29 +60,63 @@ class productManager {
             throw new Error("No se encontró ningún producto con el ID proporcionado.");
         }
 
-}
-
-async updateProducts(){
-    try{
-
-    }catch{
-
     }
-}
 
-
-async deleteProducts(){
-    try{
-
-    }catch{
-
+    async updateProduct(id, newData) {
+        try {
+           
+            const index = this.products.findIndex(product => product.id === id);
+            if (index !== -1) {
+                // Actualiza el producto con los nuevos datos
+                this.products[index] = { ...this.products[index], ...newData };
+                // Escribe los productos actualizados en el archivo
+                await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+                console.log("Producto actualizado correctamente.");
+            } else {
+                console.log("No se encontró ningún producto con el ID proporcionado.");
+            }
+        } catch (error) {
+            console.log("No se pudo actualizar el producto:", error);
+        }
     }
-}
+    
+
+
+    async deleteProduct(id) {
+        try {
+           
+            const index = this.products.findIndex(product => product.id === id);
+            if (index !== -1) {
+             
+                this.products.splice(index, 1);
+         
+                await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+                console.log("Producto eliminado correctamente.");
+            } else {
+                console.log("No se encontró ningún producto con el ID proporcionado.");
+            }
+        } catch (error) {
+            console.log("No se pudo eliminar el producto:", error);
+        }
+    }
 
 }
 
 const manager = new productManager();
-manager.addProduct("Camisa", "Descripción de la camisa", 20, "imagen.jpg", "12345", 100);
-manager.addProduct("remera", "Descripción de la remera", 10, "imagen.jpg", "12547", 90);
-manager.getProducts();
-console.log("este es el producto numero 1", manager.getProductsById(1));
+
+(async () => {
+    await manager.addProduct("Camisa", "Descripción de la camisa", 20, "imagen.jpg", "12345", 100);
+    await manager.addProduct("remera", "Descripción de la remera", 10, "imagen.jpg", "12547", 90);
+    
+    await manager.getProducts();
+    
+    console.log("Este es el producto número 1:", await manager.getProductsById(1));
+    
+    await manager.updateProduct(1, {title: "BANANA"});
+    
+    await manager.addProduct("zapatilla", "Descripción de la zapatilla", 10, "imagen.jpg", "12547", 90);
+    
+    await manager.getProducts();
+    
+    await manager.deleteProduct(1);
+})();
