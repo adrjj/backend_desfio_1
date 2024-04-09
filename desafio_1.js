@@ -8,10 +8,20 @@ class productManager{ //creamos una clase llamada productManager
 // addProduct es la metedo/funcion para crear un nuevo objeto dentro del array
 
 addProduct(title, description, price, thumbnail, code, stock) {
+    // nos aseguramos que que se completen todos los campos para realizar el push
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+        console.log("Error: Todos los campos del producto son obligatorios.");
+        return;
+    }
+
+    // comprobamos que el code no se repita
+    if (this.products.some(product => product.code === code)) {
+        console.log("Error: El código del producto ya existe.");
+        return;
+    }
+
     const newProduct = {
-        id: this.products.length+1, //cremos un id unico cada vez que agregamos un nuevo objeto al arreglo producto, 
-                                    //el metodo length en este caso cuenta los objetos del array 
-                                    //suponiendo que tenemos 5 objetos el proximo que carguemos tendria el id:6
+        id: this.products.length + 1,
         title: title,
         description: description,
         price: price,
@@ -19,9 +29,10 @@ addProduct(title, description, price, thumbnail, code, stock) {
         code: code,
         stock: stock
     };
-   // con el metodo push aplicado al array products cargamos un nuevo producto en el objeto newProduct
+    
     this.products.push(newProduct);
 }
+
 // con el metodo getProducts solo retornamos TODO lo que esta guardado en el array productos 
 getProducts() {
     return this.products; // Devuelve todos los arreglos de los productos
