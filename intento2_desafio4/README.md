@@ -3,7 +3,7 @@ carga en tiempo real en /realTimeProducts al igual que los guarda y borra desde 
 
 
 
-![Descripción de la imagen](/imagenes/lista_en_tiempo_real.png)
+![Descripción de la imagen](/intento2_desafio4/imagenes/lista_en_tiempo_real.png)
 
 
-![Descripción de la imagen](/imagenes/lista_en_tiempo_real.png)
+![Descripción de la imagen](/intento2_desafio4/imagenes/home.png)

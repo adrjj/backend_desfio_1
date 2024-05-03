@@ -7,6 +7,9 @@ class productManager {
         this.path = "productos.json"
         this.products = []
     }
+
+
+
     async addProduct(title, description, price, thumbnail, code, stock) {
         try {
             // Validar campos obligatorios
@@ -127,6 +130,11 @@ class productManager {
             return Number(maxId) + 1;
         }
     }
+
+    async testMethod() {
+        return '¡ProductManager está enlazado correctamente!';
+    }
+       
 }
 
 
@@ -153,5 +161,8 @@ const manager = new productManager();
     //5º Probamos cargar un producto con code igual
    //await manager.addProduct("teclado", "Descripewqeción de la remewqewqra", 10, "imagen.jpg", "12547", 90);
 
-
+ console.log(manager.testMethod())
 })();
+
+
+module.exports = productManager;

@@ -8,12 +8,6 @@ const fs = require('fs');
 const path = require('path');
 
 
-
-
-
-
-
-
 class productManager {
     constructor() {
         this.path = path.join(__dirname, "../productos.json"); // Definir la ruta absoluta del archivo productos.json
