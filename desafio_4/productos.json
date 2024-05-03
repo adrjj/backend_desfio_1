@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "fuente 500 W",
+    "description": "Descripción del nuevo producto",
+    "price": 46000,
+    "thumbnail": "https://ejemplo.com/imagen.jpg",
+    "code": "ABC128",
+    "stock": 13,
+    "status": true,
+    "category": "Electrónica"
+  },
+  {
+    "id": 2,
+    "title": "fuente 500 W",
+    "description": "Descripción del nuevo producto",
+    "price": 46000,
+    "thumbnail": "https://ejemplo.com/imagen.jpg",
+    "code": "ABC129",
+    "stock": 13,
+    "status": true,
+    "category": "Electrónica"
+  },
+  {
+    "id": 3,
+    "title": "fuente 500 W",
+    "description": "Descripción del nuevo producto",
+    "price": 46000,
+    "thumbnail": "https://ejemplo.com/imagen.jpg",
+    "code": "ABC130",
+    "stock": 13,
+    "status": true,
+    "category": "Electrónica"
+  }
+]

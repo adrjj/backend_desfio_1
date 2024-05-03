@@ -1,0 +1,35 @@
+[
+  {
+    "id": 5,
+    "title": "casco",
+    "description": "9",
+    "price": "9",
+    "thumbnail": "9",
+    "code": "9",
+    "stock": "9",
+    "status": true,
+    "category": "9"
+  },
+  {
+    "id": 8,
+    "title": "coder",
+    "description": "house",
+    "price": "89",
+    "thumbnail": "89",
+    "code": "89",
+    "stock": "89",
+    "status": true,
+    "category": "89"
+  },
+  {
+    "id": 9,
+    "title": "control",
+    "description": "25",
+    "price": "25",
+    "thumbnail": "25",
+    "code": "25",
+    "stock": "25",
+    "status": true,
+    "category": "25"
+  }
+]
