@@ -3,6 +3,7 @@
 const express = require('express')
 const router = express.Router()
 
+//const fs = require('fs');
 const fs = require('fs');
 const path = require('path');
 
@@ -23,54 +24,57 @@ class productManager {
 
 
 
-    async addProduct(title, description, price, thumbnail, code, stock, status, category) {
-        try {
-           // Validar campos obligatorios
-           if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
-                throw new Error("Todos los campos son obligatorios  add product.");
-            } 
-        
+async addProduct(title, description, price, thumbnail, code, stock, status, category) {
+    try {
+        // Validar campos obligatorios
+        if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
+            throw new Error("Todos los campos son obligatorios en addProduct.");
+        } 
 
-            // Validar que el código no se duplique
-            if (this.products.some(product => product.code === code)) {
-                throw new Error("El código del producto ya existe.");
-            }
-            const fileExists = await fs.promises.access(path.join(__dirname, this.path)).then(() => true).catch(() => false);
-            if (!fileExists) {
-                // Si el archivo no existe, crearlo con un array vacío
-                await fs.promises.writeFile(this.path, '[]');
-            }
-
-            const nextProductId = await this.getNextProductId();
-            const newProduct = {
-                id: nextProductId,
-                title: title,
-                description: description,
-                price: price,
-                thumbnail: thumbnail,
-                code: code,
-                stock: stock,
-                status: true,
-                category: category
-            };
-
-            this.products.push(newProduct);
-            await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2));
-           
-          
-            console.log("Producto agregado:", newProduct); // Agregamos este console.log para depurar
-
-
-        } catch (error) {
-            console.log("No se pudo agregar el producto:", error);
-            throw error;
+        // Validar que el código no se duplique
+        if (this.products.some(product => product.code === code)) {
+            throw new Error("El código del producto ya existe.");
         }
+        //la funcion de crear el array si existe la quite trai confilctos con el la vista realTimeProducts.handelbars
+        //por que al crear un archvio nuevo sobreescribe el existente...
+
+        // Cargar los productos existentes
+        await this.loadProducts();
+
+        // Obtener el próximo ID de producto
+        const nextProductId = await this.getNextProductId();
+
+        // Crear el nuevo producto
+        const newProduct = {
+            id: nextProductId,
+            title: title,
+            description: description,
+            price: price,
+            thumbnail: thumbnail,
+            code: code,
+            stock: stock,
+            status: true,
+            category: category
+        };
+
+        // Agregar el nuevo producto a la lista de productos existente
+        this.products.push(newProduct);
+
+        // Escribir toda la lista de productos, incluido el nuevo producto, en el archivo JSON
+        await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2));
+       
+        console.log("Producto agregado:", newProduct);
+
+    } catch (error) {
+        console.log("No se pudo agregar el producto:", error);
+        throw error;
     }
+}
 
 
 
 
-    async loadProducts() {
+    /*async loadProducts() {
         try {
             const data = await fs.promises.readFile(this.path, { encoding: "utf8" });
             
@@ -80,8 +84,20 @@ class productManager {
             console.log("No se pudo cargar los productos", error);
             throw error;
         }
+    }*/
+    async loadProducts() {
+        try {
+            const data = await fs.promises.readFile(this.path, { encoding: "utf8" });
+            const products = JSON.parse(data); // Parsear el contenido del archivo JSON
+            this.products = products; // Asignar los productos a this.products
+            console.log("Productos cargados:", this.products);
+            return products; // Devolver los productos
+        } catch (error) {
+            console.log("No se pudo cargar los productos", error);
+            throw error;
+        }
     }
-
+    
 
 
 
@@ -95,6 +111,18 @@ class productManager {
             console.log("no se pudo cargar los productos", error)
             throw error;
         }
+    }
+    async getProductsById(id) {
+        console.log("este es el ID que recibe la funcion getProductsByID",(id))
+        const productId = this.products.find(product => product.id ===parseInt(id));
+        console.log("esto es lo que retorna",productId)
+        if (productId) {
+            return productId;
+           
+        } else {
+            throw new Error("No se encontró ningún producto con el ID proporcionado.");
+        }
+
     }
     async getNextProductId() {
         await this.loadProducts();
@@ -132,26 +160,36 @@ class productManager {
     }
 
 
+ 
     async deleteProduct(id) {
-        try {
-            const index = this.products.findIndex(product => product.id === id);
-            if (index !== -1) {
-                // Guarda el ID del producto eliminado
-                const deletedProductId = this.products[index].id; // <-- Se agregó esta línea para obtener el ID del producto eliminado
-                this.products.splice(index, 1);
-                await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+    try {
+        console.log("Cargando productos antes de eliminar:", this.products);
+        await this.loadProducts();
+        console.log("Productos cargados antes de eliminar:", this.products);
+        
+        const index = this.products.findIndex(product => product.id.toString() === id);
+       
+        if (index !== -1) {
+            // Guarda el ID del producto eliminado
+            const deletedProductId = this.products[index].id;
+         
+            this.products.splice(index, 1);
+            await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2)); // <-- Usar fs.promises para escribir el archivo
+    
+            
 
-                console.log("Producto eliminado:", deletedProductId); // Agregamos este console.log para depurar
 
-             
-                console.log("Evento productDeleted emitido:", deletedProductId); // Agregamos este console.log para depurar
-            } else {
-                console.log("No se encontró ningún producto con el ID proporcionado.");
-            }
-        } catch (error) {
-            console.log("No se pudo eliminar el producto:", error);
+            console.log("Producto eliminado:", deletedProductId); // Agregamos este console.log para depurar
+            console.log("Evento productDeleted emitido:", deletedProductId); // Agregamos este console.log para depurar
+            console.log("Archivo JSON actualizado correctamente.");
+        } else {
+            console.log("No se encontró ningún producto con el ID proporcionado.");
         }
+    } catch (error) {
+        console.log("No se pudo eliminar el producto:", error);
     }
+}
+
 
    
 
@@ -205,8 +243,9 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("este es el id ",req.params)
         // Obtener un producto por su ID usando el método de la instancia
-        const producto = await manager.loadProducts(id);
+        const producto = await manager.getProductsById(id);
 
     
 
